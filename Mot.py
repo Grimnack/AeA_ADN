@@ -1,3 +1,5 @@
+
+
 class Mot(object):
     """docstring for Mot"""
     def __init__(self, chaine):
@@ -6,6 +8,12 @@ class Mot(object):
 
     def __str__(self) :
         return self.chaine
+
+    def __eq__(self, other) :
+        return self.chaine == other.chaine
+
+    def __hash__(self) :
+        return hash(self.chaine)
         
     def reverse(self) :
         return Mot(self.chaine[::-1])
@@ -90,10 +98,25 @@ class Mot(object):
         n = len(self.chaine)
         mapMot = {}
         for i in range(n-N+1) :
-            mot = Mot(self.chaine[i:N])
-            if(not mot in mapMot) :
-                mapMot[mot] = self.algoNaif(self, mot)
+            mot = Mot(self.chaine[i:i+N])
+            if(not mot in mapMot ):
+                mapMot[mot] = [-1]
+        for mot in mapMot :
+            mapMot[mot] = self.algoNaif(mot)
         return mapMot
+
+def printMapMot(mapMot):
+    for key, value in mapMot.items() :
+        print('key = ' + str(key) + '### value = ' + str(value) )
+
+def printPlot(mapMot,pathname) :
+    f = open(pathname,'w')
+    for mot,liste in mapMot.items() :
+        for i in liste :
+            for j in liste :
+                f.write(str(i)+'\t'+str(j)+'\n')
+    f.close()
+
 
 
 def lecture(pathname) :
@@ -104,7 +127,7 @@ def lecture(pathname) :
     for ligne in f :
         chaine += ligne.rstrip()
     f.close()
-    print(chaine)
+    # print(chaine)
     return Mot(chaine)
 
 
@@ -127,11 +150,12 @@ def lecture(pathname) :
 
 # Test lecture
 
-lecture("data-mirna/ARNmessager-1.fasta")
+mot = lecture("data-mirna/ARNmessager-1.fasta")
 
 
+mapMot = mot.occurencesMotsTailleN(6)
 
-
+printPlot(mapMot,'test.plot')
 
 
 
